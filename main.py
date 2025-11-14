@@ -1,10 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import openai
+from openai import OpenAI
+import os
 
 app = FastAPI()
 
-# Allow MIT App Inventor to connect
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -13,7 +13,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-openai.api_key = "AIzaSyC01uOOXhd76dbIfrIBM6EmRew7pMP8t30"  # Replace with your key
+openai_api_key = "YOUR_API_KEY_HERE"
+client = OpenAI(api_key=openai_api_key)
 
 @app.get("/")
 def home():
@@ -23,14 +24,14 @@ def home():
 def ask_ai(question: str):
     prompt = f"Give a clear, detailed, and easy-to-understand answer to: {question}"
 
-    try:
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.7
-        )
-        answer = response["choices"][0]["message"]["content"].strip()
-        return {"answer": answer}
-    except Exception as e:
-        return {"error": str(e)}
-    
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "Give simple and clear answers for students."},
+            {"role": "user", "content": prompt}
+        ]
+    )
+
+    answer = response.choices[0].message["content"].strip()
+
+    return {"answer": answer}
