@@ -27,7 +27,18 @@ def home():
 @app.post("/ask")
 def ask(data: Question):
 
-    prompt = f"Give a clear, simple explanation for: {data.question}"
+    prompt = prompt = f"""
+Explain the following term in a simple and clear way suitable for students.
+Include:
+
+1. Definition: Simple and clear (1–2 sentences)
+2. Explanation: Easy to understand
+3. Daily Life Example: One practical example
+4. Summary: A short 2-line summary
+
+Term: {data.question}
+"""
+
 
     try:
         model = genai.GenerativeModel("gemini-1.5-flash")
@@ -37,3 +48,4 @@ def ask(data: Question):
 
     except Exception as e:
         return {"error": str(e)}
+
