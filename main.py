@@ -1,37 +1,39 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from openai import OpenAI
-import os
+from pydantic import BaseModel
+import google.generativeai as genai
 
 app = FastAPI()
 
+# Configure Gemini API key
+genai.configure(api_key="AIzaSyAhdyT4jJVMjUkn6ILhJIajn18aHcV_SRY")
+
+# Input model
+class Question(BaseModel):
+    question: str
+
+# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-openai_api_key = "YOUR_API_KEY_HERE"
-client = OpenAI(api_key=openai_api_key)
-
 @app.get("/")
 def home():
-    return {"message": "AI Backend Running Successfully"}
+    return {"message": "Backend running"}
 
-@app.get("/ask")
-def ask_ai(question: str):
-    prompt = f"Give a clear, detailed, and easy-to-understand answer to: {question}"
+@app.post("/ask")
+def ask(data: Question):
 
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": "Give simple and clear answers for students."},
-            {"role": "user", "content": prompt}
-        ]
-    )
+    prompt = f"Give a clear, simple explanation for: {data.question}"
 
-    answer = response.choices[0].message["content"].strip()
+    try:
+        model = genai.GenerativeModel("gemini-1.5-flash")
+        response = model.generate_content(prompt)
 
-    return {"answer": answer}
+        return {"answer": response.text}
+
+    except Exception as e:
+        return {"error": str(e)}
