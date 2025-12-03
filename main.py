@@ -6,7 +6,7 @@ import google.generativeai as genai
 app = FastAPI()
 
 # Configure Gemini API key
-genai.configure(api_key="AIzaSyBMWGAmPAUWF32NFkvdyh0_Mjrs_fq5Gcc")
+genai.configure(api_key="AIzaSyClCC1kwKFI-4GWNCErGB8M5YMLebFu1X4")
 
 # Input model
 class Question(BaseModel):
@@ -32,7 +32,7 @@ Explain the following term in a simple and clear way suitable for students.
 Include:
 
 1. Definition: Simple and clear (1–2 sentences)
-2. Explanation: Easy to understand
+2. Explanation: Easy to understand (3-4 sentences)
 3. Daily Life Example: One practical example
 4. Summary: A short 2-line summary
 
@@ -48,6 +48,7 @@ Term: {data.question}
 
     except Exception as e:
         return {"error": str(e)}
+
 
 
 
