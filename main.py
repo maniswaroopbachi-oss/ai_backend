@@ -2,11 +2,12 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import google.generativeai as genai
+import os
 
 app = FastAPI()
 
 # Configure Gemini API key
-genai.configure(api_key="AIzaSyBXf83Yhr3VMhoa5lWKqESvIGkrHsesjX0")
+genai.configure(api_key=os.environ["GEMINI_API_KEY"])
 
 # Input model
 class Question(BaseModel):
@@ -48,6 +49,7 @@ Term: {data.question}
 
     except Exception as e:
         return {"error": str(e)}
+
 
 
 
