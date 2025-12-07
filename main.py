@@ -42,13 +42,15 @@ Term: {data.question}
 
 
     try:
-        model = genai.GenerativeModel("gemini-1.5-flash")
+        model = genai.GenerativeModel("gemini-1.5-flash
+")
         response = model.generate_content(prompt)
 
         return {"answer": response.text}
 
     except Exception as e:
         return {"error": str(e)}
+
 
 
 
